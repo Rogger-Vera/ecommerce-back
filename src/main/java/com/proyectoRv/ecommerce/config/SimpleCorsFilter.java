@@ -30,7 +30,7 @@ public class SimpleCorsFilter implements Filter {
 
 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-//        logger.info("Pase por el doFilter");
+        logger.info("Pase por el doFilter");
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
         Map<String, String> map = new HashMap<>();

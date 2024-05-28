@@ -33,7 +33,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private static final String TOKEN_PREFIX = "Baerer ";
+    private static final String TOKEN_PREFIX = "Bearer ";
     private static final String HEADER_STRING = "Authorization";
 
     @Autowired
@@ -59,15 +59,17 @@ public class AuthController {
             logger.info("Autenticación exitosa para el usuario: {}", authenticationRequest.getUserName());
         } catch (BadCredentialsException e){
             logger.error("Error de autenticación para el usuario: {}", authenticationRequest.getUserName());
-            response.getWriter().write("Usuario o contraseña incorrectos");
+            response.getWriter().write(new JSONObject()
+                    .put("status", HttpStatus.UNAUTHORIZED.value())
+                    .put("errorMessage", e.getMessage())
+                    .toString()
+            );
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.flushBuffer();
-            logger.error(e.getMessage());
-            throw new BadCredentialsException("Usuario o contraseña incorrecta");
+            return ;
         } catch (InternalAuthenticationServiceException e){
             logger.error("Error de autenticación interno: {}", e.getMessage());
         }
-
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUserName());
         Optional<UserEntity> optionalUser = userRepository.findFirstByEmail(userDetails.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
@@ -76,7 +78,7 @@ public class AuthController {
             response.getWriter().write(new JSONObject()
                     .put("userId ", optionalUser.get().getId())
                     .put("userRole", optionalUser.get().getUserRole())
-                    .put("token", jwt)
+                    .put("status", HttpStatus.OK.value())
                     .toString()
             );
             response.addHeader("Access-Control-Expose-Headers", "Authorization");

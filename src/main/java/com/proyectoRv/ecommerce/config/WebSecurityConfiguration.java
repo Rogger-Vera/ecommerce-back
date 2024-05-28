@@ -24,6 +24,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.time.Duration;
+import java.util.Collections;
 
 
 @Configuration
@@ -53,7 +54,7 @@ public class WebSecurityConfiguration {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:4200"); // Permitir solicitudes desde cualquier origen
+        config.addAllowedOrigin("http://localhost:4200");// Permitir solicitudes desde cualquier origen
         config.addAllowedMethod("*"); // Permitir cualquier método (GET, POST, etc.)
         config.addAllowedHeader("*"); // Permitir cualquier encabezado
         config.setMaxAge(Duration.ofHours(1));
